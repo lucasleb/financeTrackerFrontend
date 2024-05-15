@@ -1,29 +1,27 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Initialize the navigate hook
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8005/auth/login', {
+      const response = await axios.post(`${BASE_URL}/auth/login`, {
         email,
         password,
       });
 
-      // Store the JWT token
-      localStorage.setItem('token', response.data.token);
-
-      // Redirect to the protected route after successful login
-      navigate('/'); // Use navigate instead of useHistory.push
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
     } catch (err) {
       console.error(err);
-      alert('Login failed. Please check your credentials and try again.');
+      alert("Login failed. Please check your credentials and try again.");
     }
   };
 

@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "./config";
 
 const Signup = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.post('http://localhost:8005/auth/signup', {
+      await axios.post(`${BASE_URL}/auth/signup`, {
         email,
         password,
         fullName,
       });
 
-      navigate('/login'); // Use useNavigate to redirect
+      navigate("/login"); // Use useNavigate to redirect
     } catch (err) {
       console.error(err);
-      alert('Signup failed. Please try again.');
+      alert("Signup failed. Please try again.");
     }
   };
 
