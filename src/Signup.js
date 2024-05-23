@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./config";
@@ -7,6 +7,8 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const token = localStorage.getItem("token");
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -26,9 +28,15 @@ const Signup = () => {
     }
   };
 
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <div>
-      <h2>Signup</h2>
+      <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email</label>
@@ -58,6 +66,9 @@ const Signup = () => {
           />
         </div>
         <button type="submit">Sign Up</button>
+        <button type="button" onClick={() => navigate("/login")}>
+          Already signed up ? Login
+        </button>
       </form>
     </div>
   );

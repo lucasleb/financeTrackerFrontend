@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "./config";
@@ -6,7 +6,8 @@ import { BASE_URL } from "./config";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Initialize the navigate hook
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,6 +25,12 @@ const Login = () => {
       alert("Login failed. Please check your credentials and try again.");
     }
   };
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div>
@@ -48,6 +55,9 @@ const Login = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <button type="button" onClick={() => navigate("/signup")}>
+          Don't have an account ? Sign Up
+        </button>
       </form>
     </div>
   );
