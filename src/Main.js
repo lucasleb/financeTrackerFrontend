@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import UserAccount from "./UserAccount";
 import UserGroups from "./UserGroups";
 import UserGroupInvitations from "./UserGroupInvitations";
+import TransactionCategories from "./TransactionCategories";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -88,6 +89,7 @@ const Main = () => {
         useradmingroups={useradmingroups}
         fetchUserGroups={fetchUserGroups}
       />
+      <TransactionCategories token={token} />
     </div>
   );
 };
