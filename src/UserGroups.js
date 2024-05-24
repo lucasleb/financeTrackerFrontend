@@ -105,7 +105,7 @@ const UserGroups = ({
 
   return (
     <div>
-      {usergroups ? (
+      {usergroups && user ? (
         <div>
           <h2>Your groups</h2>
 
