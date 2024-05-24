@@ -2,29 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { BASE_URL } from "./config";
 
-const UserGroups = ({ user, token }) => {
-  const [usergroups, setUsergroups] = useState(null);
+const UserGroups = ({
+  token,
+  user,
+  usergroups,
+  fetchUserGroups,
+  fetchUserAdmingroups,
+}) => {
+  //   const [usergroups, setUsergroups] = useState(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [groupToEdit, setGroupToEdit] = useState(null);
   const groupNameRef = useRef();
-
-  const fetchUserGroups = async () => {
-    if (token) {
-      try {
-        const response = await axios.get(`${BASE_URL}/usergroups`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setUsergroups(response.data);
-      } catch (err) {
-        console.error(err);
-        alert("Error fetching usergroups data.");
-      }
-    }
-  };
 
   const handleCreate = (event) => {
     event.preventDefault();
@@ -43,6 +32,8 @@ const UserGroups = ({ user, token }) => {
       )
       .then((response) => {
         fetchUserGroups();
+        fetchUserAdmingroups();
+
         console.log("Success:", response.data);
         setIsCreateModalOpen(false);
       })
@@ -60,6 +51,7 @@ const UserGroups = ({ user, token }) => {
       });
 
       fetchUserGroups();
+      fetchUserAdmingroups();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -82,8 +74,25 @@ const UserGroups = ({ user, token }) => {
         }
       );
 
-      fetchUserGroups(); // Update the list of groups
+      fetchUserGroups();
+      fetchUserAdmingroups();
+
       setIsEditModalOpen(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleLeaveGroup = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/usergroups/${id}/leave`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchUserGroups();
+      fetchUserAdmingroups();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -91,6 +100,7 @@ const UserGroups = ({ user, token }) => {
 
   useEffect(() => {
     fetchUserGroups();
+    fetchUserAdmingroups();
   }, []);
 
   return (
@@ -118,17 +128,25 @@ const UserGroups = ({ user, token }) => {
                     ))}
                   </td>
                   <td>
-                    <button
-                      onClick={() => {
-                        setGroupToEdit(usergroup);
-                        setIsEditModalOpen(true);
-                      }}
-                    >
-                      Edit
-                    </button>{" "}
-                    <button onClick={() => handleDelete(usergroup.id)}>
-                      Delete
-                    </button>{" "}
+                    {usergroup.admin.id === user.id ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            setGroupToEdit(usergroup);
+                            setIsEditModalOpen(true);
+                          }}
+                        >
+                          Edit
+                        </button>{" "}
+                        <button onClick={() => handleDelete(usergroup.id)}>
+                          Delete
+                        </button>{" "}
+                      </>
+                    ) : (
+                      <button onClick={() => handleLeaveGroup(usergroup.id)}>
+                        Leave Group
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

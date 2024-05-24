@@ -11,6 +11,7 @@ const Main = () => {
 
   const [user, setUser] = useState(null);
   const [usergroups, setUsergroups] = useState(null);
+  const [useradmingroups, setUserAdmingroups] = useState(null);
 
   const token = localStorage.getItem("token");
 
@@ -33,22 +34,40 @@ const Main = () => {
     }
   };
 
-  // const fetchUserGroups = async () => {
-  //   if (token) {
-  //     try {
-  //       const response = await axios.get(`${BASE_URL}/usergroups`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
+  const fetchUserGroups = async () => {
+    if (token) {
+      try {
+        const response = await axios.get(`${BASE_URL}/usergroups`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  //       setUsergroups(response.data);
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert("Error fetching usergroups data.");
-  //     }
-  //   }
-  // };
+        setUsergroups(response.data);
+        console.log(response.data);
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching usergroups data.");
+      }
+    }
+  };
+
+  const fetchUserAdmingroups = async () => {
+    if (token) {
+      try {
+        const response = await axios.get(`${BASE_URL}/usergroups/admin`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setUserAdmingroups(response.data);
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching useradmingroups data.");
+      }
+    }
+  };
 
   useEffect(() => {
     fetchUser();
@@ -57,8 +76,18 @@ const Main = () => {
   return (
     <div>
       <UserAccount user={user} token={token} />
-      <UserGroups user={user} token={token} />
-      <UserGroupInvitations user={user} token={token} />
+      <UserGroups
+        user={user}
+        token={token}
+        fetchUserGroups={fetchUserGroups}
+        fetchUserAdmingroups={fetchUserAdmingroups}
+        usergroups={usergroups}
+      />
+      <UserGroupInvitations
+        token={token}
+        useradmingroups={useradmingroups}
+        fetchUserGroups={fetchUserGroups}
+      />
     </div>
   );
 };
